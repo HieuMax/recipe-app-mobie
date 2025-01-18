@@ -1,74 +1,212 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+// Import các thư viện
+import React, { useState } from 'react';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
-}
+// Định nghĩa các kiểu dữ liệu
+type Ingredient = {
+  name: string;
+  quantity: string;
+  image: any;
+};
+type Step = string;
 
+type Recipe = {
+  id: number;
+  title: string;
+  category: string;
+  image: any;
+  ingredients: Ingredient[];
+  steps: string[];
+};
+
+type RootDrawerParamList = {
+  TrangChủ: undefined;
+  DanhMuc: undefined;
+  MonAnVietNam: undefined;
+  MonAnNuocNgoai: undefined;
+  ChiTietMonAn: { recipe: Recipe };
+};
+
+// Tạo Drawer Navigator
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
+
+// Dữ liệu món ăn
+const vietnameseRecipes: Recipe[] = [
+  {
+    id: 1,
+    title: 'Phở Bò',
+    category: 'Món Nước',
+    image: require('../../assets/images/phobo.jpeg'),
+    ingredients: [
+      { name: 'Bánh phở', quantity: '200g', 
+        image: require('../../assets/images/phobo.jpeg') 
+      },
+      { name: 'Thịt bò', quantity: '150g', 
+        image: require('../../assets/images/phobo.jpeg') 
+      },
+      { name: 'Xương bò', quantity: '300g', 
+        image: require('../../assets/images/phobo.jpeg') 
+      },
+      { name: 'Hành lá', quantity: '50g', 
+        image: require('../../assets/images/phobo.jpeg') 
+      },
+      { name: 'Gia vị', quantity: '1 muỗng cà phê',
+        image: require('../../assets/images/phobo.jpeg') 
+      },
+    ],
+    steps: [
+      'Bước 1: Nấu xương bò trong 4-5 tiếng để lấy nước dùng.',
+      'Bước 2: Luộc bánh phở và thái thịt bò mỏng.',
+      'Bước 3: Xếp bánh phở vào tô, thêm thịt bò và hành lá.',
+      'Bước 4: Chan nước dùng nóng vào tô và thưởng thức.',
+    ],
+  },
+  {
+    id: 2,
+    title: 'Gỏi Cuốn',
+    category: 'Món Cuốn',
+    image: require('../../assets/images/phobo.jpeg'),
+    ingredients: [
+      { name: 'Bánh tráng', quantity: '10 cái', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Tôm', quantity: '200g', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Thịt ba chỉ', quantity: '150g', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Bún tươi', quantity: '100g', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Rau sống', quantity: '50g', image: require('../../assets/images/phobo.jpeg') },
+    ],
+    steps: [
+      'Bước 1: Luộc tôm và thái thịt ba chỉ thành từng lát mỏng.',
+      'Bước 2: Ngâm bánh tráng cho mềm, sau đó cuốn các nguyên liệu lại.',
+      'Bước 3: Dùng kèm nước chấm hoặc tương ớt.',
+    ],
+  },
+];
+
+const foreignRecipes: Recipe[] = [
+  {
+    id: 1,
+    title: 'Sushi',
+    category: 'Japanese',
+    image: require('../../assets/images/phobo.jpeg'),
+    ingredients: [
+      { name: 'Gạo sushi', quantity: '200g', image: require('../../assets/images/phobo.jpeg') },
+{ name: 'Cá hồi', quantity: '150g', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Rong biển', quantity: '10 lá', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Dấm', quantity: '30ml', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Gia vị', quantity: '1 muỗng cà phê', image: require('../../assets/images/phobo.jpeg') },
+    ],
+    steps: [
+      'Bước 1: Nấu gạo sushi và trộn với giấm.',
+      'Bước 2: Cắt cá hồi thành từng lát mỏng.',
+      'Bước 3: Cuộn cá hồi và gạo sushi với rong biển.',
+      'Bước 4: Cắt miếng sushi và thưởng thức.',
+    ],
+  },
+  {
+    id: 2,
+    title: 'Pizza Margherita',
+    category: 'Italian',
+    image: require('../../assets/images/phobo.jpeg'),
+    ingredients: [
+      { name: 'Bột mì', quantity: '250g', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Phô mai mozzarella', quantity: '100g', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Cà chua', quantity: '2 quả', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Húng quế', quantity: '5 lá', image: require('../../assets/images/phobo.jpeg') },
+      { name: 'Gia vị', quantity: '1 muỗng cà phê', image: require('../../assets/images/phobo.jpeg') },
+    ],
+    steps: [
+      'Bước 1: Trộn bột mì và nhào thành bột pizza.',
+      'Bước 2: Cắt cà chua và phô mai thành lát mỏng.',
+      'Bước 3: Phết bột lên đế pizza và thêm các nguyên liệu.',
+      'Bước 4: Nướng pizza ở nhiệt độ cao và thưởng thức.',
+    ],
+  },
+];
+
+const HomeScreen: React.FC = () => (
+  <SafeAreaView style={styles.container}>
+    <Text style={styles.header}>Chia Sẻ Công Thức Nấu Ăn</Text>
+    <Text style={styles.subHeader}>
+      Hãy khám phá các công thức nấu ăn hấp dẫn và sáng tạo!
+    </Text>
+  </SafeAreaView>
+);
+
+const App: React.FC = () => (
+  <Drawer.Navigator initialRouteName="TrangChủ">
+    <Drawer.Screen name="TrangChủ" component={HomeScreen} />
+
+  </Drawer.Navigator>
+);
+// Trang chính
+
+// Các style
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    padding: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  category: {
+    fontSize: 16,
+    color: 'gray',
+  },
+  card: {
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+  },
+  recipeImage: {
+    width: '100%',
+    height: 250,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+  ingredient: {
+    fontSize: 16,
+  },
+  step: {
+    fontSize: 16,
+    marginVertical: 5,
   },
 });
+
+export default App;
+
+// export default function HomeScreen () {
+//   return(
+//     <SafeAreaView style={styles.container}>
+//       <Text style={styles.header}>Chia Sẻ Công Thức Nấu Ăn</Text>
+//       <Text style={styles.subHeader}>
+//         Hãy khám phá các công thức nấu ăn hấp dẫn và sáng tạo!
+//       </Text>
+//     </SafeAreaView>
+//   )
+// }
