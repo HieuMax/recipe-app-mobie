@@ -132,6 +132,7 @@ const foreignRecipes: Recipe[] = [
   },
 ];
 
+// Trang chu - Screen
 const HomeScreen: React.FC = () => (
   <SafeAreaView style={styles.container}>
     <Text style={styles.header}>Chia Sẻ Công Thức Nấu Ăn</Text>
@@ -141,19 +142,95 @@ const HomeScreen: React.FC = () => (
   </SafeAreaView>
 );
 
+// Cac mon an viet nam - Screen
+const VietnameseFoodScreen: React.FC<any> = ({ navigation }) => (
+  <View style={styles.container}>
+    <FlatList
+      data={vietnameseRecipes}
+      horizontal={true}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('ChiTietMonAn', { recipe: item })}
+        >
+          <View style={styles.card}>
+            <Image source={item.image} style={styles.image} />
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.category}>{item.category}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+);
+
+// Cac mon an nuoc ngoai - Screen
+const ForeignFoodScreen: React.FC<any> = ({ navigation }) => (
+  <View style={styles.container}>
+    <FlatList
+      data={foreignRecipes}
+      horizontal={true}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('ChiTietMonAn', { recipe: item })}
+        >
+          <View style={styles.card}>
+            <Image source={item.image} style={styles.image} />
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.category}>{item.category}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+);
+
+const RecipeDetailScreen: React.FC<any> = ({ route }) => {
+  const { recipe }: { recipe: Recipe } = route.params;
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>{recipe.title}</Text>
+      <Image source={recipe.image} style={styles.recipeImage} />
+      <Text style={styles.subHeader}>Nguyên liệu:</Text>
+      {recipe.ingredients.map((ingredient: Ingredient, index: number) => (
+        <Text key={index} style={styles.ingredient}>
+          {ingredient.name} - {ingredient.quantity}
+        </Text>
+      ))}
+      <Text style={styles.subHeader}>Công thức:</Text>
+      {recipe.steps.map((step: Step, index: number) => (
+        <Text key={index} style={styles.step}>
+          {step}
+        </Text>
+      ))}
+    </SafeAreaView>
+  );
+}
+
 const App: React.FC = () => (
   <Drawer.Navigator initialRouteName="TrangChủ">
     <Drawer.Screen name="TrangChủ" component={HomeScreen} />
-
+    <Drawer.Screen name="MonAnVietNam" component={VietnameseFoodScreen} />
+    <Drawer.Screen name="MonAnNuocNgoai" component={ForeignFoodScreen} />
+    <Drawer.Screen name="ChiTietMonAn" component={RecipeDetailScreen} 
+      options={{ 
+        drawerLabel: () => null,
+        drawerItemStyle: { height: 0 }, // Removes clickable space
+       }} // Hides this screen from the drawer
+    />
   </Drawer.Navigator>
 );
-// Trang chính
 
 // Các style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    margin: "auto"
   },
   header: {
     fontSize: 24,
@@ -177,6 +254,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
+    width: 200,
+    borderColor: "black",
+    // borderWidth: 1,
+    boxShadow: "0px 4px 4px 0px black"
+  },
+  button:{
+    // backgroundColor: "red",
+    width:250
   },
   image: {
     width: '100%',
@@ -196,17 +281,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 5,
   },
+  listContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16, 
+  },
 });
 
 export default App;
-
-// export default function HomeScreen () {
-//   return(
-//     <SafeAreaView style={styles.container}>
-//       <Text style={styles.header}>Chia Sẻ Công Thức Nấu Ăn</Text>
-//       <Text style={styles.subHeader}>
-//         Hãy khám phá các công thức nấu ăn hấp dẫn và sáng tạo!
-//       </Text>
-//     </SafeAreaView>
-//   )
-// }
